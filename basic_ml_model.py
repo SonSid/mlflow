@@ -8,7 +8,7 @@ import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import ElasticNet
 
-from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score,accuracy_score
+from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score,accuracy_score,roc_auc_score
 from sklearn.model_selection import train_test_split
 
 import argparse #Its a library
@@ -24,7 +24,7 @@ def get_data():
         raise e
 
 
-def evaluate(y_true,y_pred):
+def evaluate(y_true,y_pred,pred_prob):
     '''# Using Elastic Net Model
     mae=mean_absolute_error(y_true, y_pred)
     mse=mean_squared_error(y_true, y_pred)
@@ -35,7 +35,9 @@ def evaluate(y_true,y_pred):
     '''
     # Accuracy is calculated for Random Forest
     accuracy=accuracy_score(y_true,y_pred)
-    return accuracy
+    rc_score=roc_auc_score(y_true,y_pred,multi_class='ovr')
+    
+    return accuracy,roc_auc_score
 
 
 def main(n_estimators,max_depth):
@@ -64,18 +66,18 @@ def main(n_estimators,max_depth):
     print(f"Mean Absolute Error {mae}, Mean Squared Error {mse}, Root Mean Squared Error {rmse}, R2_score {r2}")
     """
     #Using Random Forest
-#    with mlflow.start_run():
-    rf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth)  
-    rf.fit(X_train, y_train)
-    pred=rf.predict(X_test)
-        
-    #pred_prob=rf.predict_proba(X_test)
+    with mlflow.start_run():
+        rf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth)  
+        rf.fit(X_train, y_train)
+        pred=rf.predict(X_test)
+    
+        pred_prob=rf.predict_proba(X_test)
         
         #evalute the model
         #mae,mse,rmse,r2=evaluate(y_test,pred)
         
-    accuracy=evaluate(y_test,pred)
-    """    
+        accuracy,rc_score=evaluate(y_test,pred,pred_prob)
+        
         mlflow.log_param("n_estimators",n_estimators)
         mlflow.log_param("max_depth",max_depth)
         
@@ -86,9 +88,9 @@ def main(n_estimators,max_depth):
         mlflow.sklearn.log_model(rf,"randomforestmodel")
         
         
-        #print(f"mean absolute error {mae}, mean squared error {mse}, root mean squared error {rmse}, r2_score {r2}")
-    """    
-    print(f"accuracy {accuracy}") #, roc_auc_score {rc_score}
+        # print(f"mean absolute error {mae}, mean squared error {mse}, root mean squared error {rmse}, r2_score {r2}")
+       
+        print(f"accuracy {accuracy} , roc_auc_score {rc_score}")
         
 
 

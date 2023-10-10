@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/Sid/mlflow/mlruns/0/1d6614eb813d464990d0ed3e8f6d0d92/artifacts
+end_time: 1696878244088
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1d6614eb813d464990d0ed3e8f6d0d92
+run_name: burly-skink-881
+run_uuid: 1d6614eb813d464990d0ed3e8f6d0d92
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1696878232053
+status: 4
+tags: []
+user_id: Sid
